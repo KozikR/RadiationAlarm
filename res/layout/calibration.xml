@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/calibrate"
+        android:textAppearance="?android:attr/textAppearanceLarge" 
+        android:gravity="center" />
+    
+    <eu.camdetector.radiationalarm.HistogramView
+        android:id="@+id/histogram"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    
+      <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="horizontal" >
+
+           <TextView
+               android:id="@+id/textView1"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:gravity="center"
+               android:text="@string/threshold"
+               android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/alarm_level"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </LinearLayout>
+        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/c_first_th"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number" >
+
+			    </EditText>
+
+			    <EditText
+			        android:id="@+id/c_second_th"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_weight="1"
+			        android:ems="10"
+			        android:inputType="number" >
+
+			    </EditText>     
+
+    </LinearLayout>
+    
+       <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+	    <Button
+	        android:id="@+id/c_save"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/Save"
+	         />
+
+	    <!--        android:enabled="false"
+        	android:focusable="false" --> 
+	    
+	    <Button
+	        android:id="@+id/c_back"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/Back" />
+
+	 </LinearLayout>
+
+</LinearLayout>
