@@ -1,5 +1,7 @@
 package eu.camdetector.radiationalarm;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -7,10 +9,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -30,10 +34,10 @@ public class RadiationAlarm extends Activity {
 	private static final int ALARM_LENGHT = 30;
 	
 	private static final int FIRST_TH_W = 1;
-	private static final int SECOND_TH_W = 0;
 	
 	private SharedPreferences sharedPref;
 	private Camera mCamera;
+	private SurfaceTexture mSurfaceTexture;
 	
 	private TextView text_info;
 	private TextView image_info;
@@ -170,6 +174,15 @@ public class RadiationAlarm extends Activity {
 		    if (size != null) {
 		    	parameters.setPreviewSize(size.width, size.height);
 		    	mCamera.setParameters(parameters);          
+		    }
+		    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		    mSurfaceTexture = new SurfaceTexture(1);
+		    try {
+				mCamera.setPreviewTexture(mSurfaceTexture);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		    }
 			mCamera.setPreviewCallback(mPreviemCallback);
 		    mCamera.startPreview();

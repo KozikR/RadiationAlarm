@@ -1,14 +1,18 @@
 package eu.camdetector.radiationalarm;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +44,7 @@ public class CalibrationActivity extends Activity {
 	public int frames = 200;
 	
 	private Camera mCamera;
+	private SurfaceTexture mSurfaceTexture;	
 	
 	@Override
 	 protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +149,6 @@ public class CalibrationActivity extends Activity {
 			}
 			else
 			{				
-				int sum = 0;
 				for(first_th = 255; first_th >= 0; first_th--)
 					if(histogram[first_th] > 0)
 					{
@@ -181,7 +185,17 @@ public class CalibrationActivity extends Activity {
 		    	parameters.setPreviewSize(size.width, size.height);
 		    	mCamera.setParameters(parameters);          
 		    }
-			mCamera.setPreviewCallback(mPreviemCallback);
+		   
+		    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+		    mSurfaceTexture = new SurfaceTexture(1);
+		    try {
+				mCamera.setPreviewTexture(mSurfaceTexture);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    }
+		    mCamera.setPreviewCallback(mPreviemCallback);
 		    mCamera.startPreview();
 		    }
 	    }
