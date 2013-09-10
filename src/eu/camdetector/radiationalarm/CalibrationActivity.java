@@ -1,7 +1,5 @@
 package eu.camdetector.radiationalarm;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,7 +11,6 @@ import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -43,50 +40,6 @@ public class CalibrationActivity extends Activity {
 	public int frames = 200;
 	
 	private Camera mCamera;
-	private SurfaceHolder mSurfaceHolder;
-	
-	private PreviewCallback mPreviemCallback = new PreviewCallback() {			
-		@Override
-		public void onPreviewFrame(byte[] data, Camera camera)
-		{
-			number_of_frames++;
-			progress.setProgress(number_of_frames);
-			if(number_of_frames <= frames)
-			{
-				Parameters cameraParameters = camera.getParameters();
-				int imageFormat = cameraParameters.getPreviewFormat();
-				if (imageFormat == ImageFormat.NV21) {
-					Size size = camera.getParameters().getPreviewSize();
-					for(int i=0; i < size.height; i++)
-						for(int j=0; j < size.width; j++)
-						{							
-							{
-								int nValue = 0xff & (int) data[i*size.width + j];
-								histogram[nValue]++;											
-							}
-						}			
-				}
-				histogram_view.drawHistogram(histogram);
-			}
-			else
-			{				
-				
-				for(first_th = 255; first_th >= 0; first_th--)
-					if(histogram[first_th] > 0)
-					{
-						first_th++;
-						break;
-					}
-				
-				first_th+=FIRST_TH_OFFSET;
-				
-				first_th_edit.setText(Integer.toString(first_th));
-								
-				save_button.setEnabled(true);
-				save_button.setFocusable(true);
-			}
-		}
-	};
 	
 	@Override
 	 protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +86,7 @@ public class CalibrationActivity extends Activity {
         new AlertDialog.Builder(this)
     	.setTitle(R.string.calibrate)
     	.setItems(R.array.CalibrationOptions, 
-    	new DialogInterface.OnClickListener() {
+    			new DialogInterface.OnClickListener() {
     		public void onClick(DialogInterface dialoginterface, int i) {
     			if(i == 1)	frames = 1000;
     			else frames = 150;
@@ -166,7 +119,49 @@ public class CalibrationActivity extends Activity {
 	    getCameraInstance();
 	}
 	
-
+	private PreviewCallback mPreviemCallback = new PreviewCallback() {			
+		@Override
+		public void onPreviewFrame(byte[] data, Camera camera)
+		{
+			number_of_frames++;
+			progress.setProgress(number_of_frames);
+			if(number_of_frames <= frames)
+			{
+				Parameters cameraParameters = camera.getParameters();
+				int imageFormat = cameraParameters.getPreviewFormat();
+				if (imageFormat == ImageFormat.NV21) {
+					Size size = camera.getParameters().getPreviewSize();
+					for(int i=0; i < size.height; i++)
+						for(int j=0; j < size.width; j++)
+						{							
+							{
+								int nValue = 0xff & (int) data[i*size.width + j];
+								histogram[nValue]++;											
+							}
+						}			
+				}
+				histogram_view.drawHistogram(histogram);
+			}
+			else
+			{				
+				int sum = 0;
+				for(first_th = 255; first_th >= 0; first_th--)
+					if(histogram[first_th] > 0)
+					{
+						first_th++;
+						break;
+					}
+				
+				first_th+=FIRST_TH_OFFSET;
+				
+				first_th_edit.setText(Integer.toString(first_th));
+								
+				save_button.setEnabled(true);
+				save_button.setFocusable(true);
+			}
+		}
+	};
+	
 	public void getCameraInstance(){
 	    if(mCamera == null)
 	    {
@@ -174,7 +169,6 @@ public class CalibrationActivity extends Activity {
 	        mCamera = Camera.open(); // attempt to get a Camera instance
 	    }
 	    catch (Exception e){
-	    	e.printStackTrace();
 	        // Camera is not available (in use or does not exist)
 	    }
 	    if(mCamera == null)	; //if error when open camera
@@ -187,12 +181,6 @@ public class CalibrationActivity extends Activity {
 		    	parameters.setPreviewSize(size.width, size.height);
 		    	mCamera.setParameters(parameters);          
 		    }
-		    //mSurfaceHolder = new SurfaceHolder;
-		    try {
-				mCamera.setPreviewDisplay(null);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			mCamera.setPreviewCallback(mPreviemCallback);
 		    mCamera.startPreview();
 		    }
