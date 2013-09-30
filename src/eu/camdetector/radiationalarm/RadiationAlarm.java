@@ -21,10 +21,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-
-
-
 
 public class RadiationAlarm extends Activity {
 	protected static final String TAG = "RadiationAlarm";
@@ -32,7 +30,6 @@ public class RadiationAlarm extends Activity {
 	private static final int REQUEST_INIT_INFO = 2;
 	
 	private static final int ALARM_LENGHT = 30;
-	
 	private static final int FIRST_TH_W = 1;
 	
 	private SharedPreferences sharedPref;
@@ -41,19 +38,23 @@ public class RadiationAlarm extends Activity {
 	
 	private TextView text_info;
 	private TextView image_info;
+	private LinearLayout background;
+	private TextView text_bright;
 	
 	public Handler Handler;
 	
 	public int first_th = 60;
 	public int show_info;
 	public int alarm = 0;
-	public int alarm_level = 4;
+	public static final int ALARM_LEVEL_VAL = 200;
+	public int alarm_level = ALARM_LEVEL_VAL;
+	public int low_alarm_level = 1;
 	
-	private final static int frames = 100;
+	private final static int frames = 1000;
 	private int[] bright_px;
 	private int current_frame = 0;
-	private int sum = 0;
-		
+	private int sum = 0;	
+	
 	private PreviewCallback mPreviemCallback = new PreviewCallback() {			
 		@Override
 		public void onPreviewFrame(byte[] data, Camera camera)
@@ -75,48 +76,50 @@ public class RadiationAlarm extends Activity {
 				sum -= bright_px[current_frame];
 				sum += number_of_bright_px;
 				bright_px[current_frame] = number_of_bright_px;
-			//Log.d(TAG, size.width + ":" + size.height  + "NofBP: " + number_of_bright_px);
-			//	Log.d(TAG, "New threshold" + threshold);
-					
+				//Log.d(TAG, size.width + ":" + size.height  + "NofBP: " + number_of_bright_px);
+				//Log.d(TAG, "New threshold" + threshold);				
 				
-				TextView text_bright = (TextView) findViewById(R.id.text_bright);				
+				text_bright.setText(String.format("\nSum: " + sum));
 				
-				String to_format = getResources().getString(R.string.info_bright);
-				text_bright.setText(String.format(to_format, number_of_bright_px) + "\nTh: " + first_th + " ALv: " + alarm_level + "\nSum: " + sum + " AlarmTime: " + alarm );
-				
-				
-				
-				if(sum > alarm_level)	alarm = ALARM_LENGHT;
-				if(alarm > 0)
+				if(sum >= alarm_level)
+				{
+					alarm = ALARM_LENGHT;
+					change_state(2);
+				}
+				else if(alarm > 0)
 				{
 					change_state(2);
 					alarm--;
 				}
+				else if(sum >= low_alarm_level)	change_state(4);				
 				else	change_state(1);
 			}
 		}
 	};
 	private void load_data(){
 		sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        first_th = sharedPref.getInt(getResources().getString(R.string.saved_threshold), 15);
-        alarm_level = sharedPref.getInt(getResources().getString(R.string.saved_alarm_level), 4);
-        show_info = sharedPref.getInt(getResources().getString(R.string.saved_info_show), 1);
-		
+        first_th = sharedPref.getInt(getResources().getString(R.string.saved_threshold), first_th);
+        alarm_level = sharedPref.getInt(getResources().getString(R.string.saved_alarm_level), alarm_level);
+        show_info = sharedPref.getInt(getResources().getString(R.string.saved_info_show), 1);		
 	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_radiation_alarm);		
-		TextView text_bright = (TextView) findViewById(R.id.text_bright);
+		text_bright = (TextView) findViewById(R.id.text_bright);
 		text_info = (TextView) findViewById(R.id.text_info);
 		image_info = (TextView) findViewById(R.id.image_info);
+		background = (LinearLayout) findViewById(R.id.main_layout);
 		//Set number of bright pixels to 0 
 		String to_format = getResources().getString(R.string.info_bright);
 		text_bright.setText(String.format(to_format, 0));
 		
 		load_data();
-        
+		/*reset background*/
+		current_state = 0;
+		change_state(1);
+		
         if(show_info == 1)
         {
         	//show info and calibrate!!!
@@ -180,7 +183,6 @@ public class RadiationAlarm extends Activity {
 		    try {
 				mCamera.setPreviewTexture(mSurfaceTexture);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		    }
@@ -216,33 +218,51 @@ public class RadiationAlarm extends Activity {
 	     catch (Exception e){
 	    	// ignore: tried to stop a non-existent preview
 	     }
-//	     if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//	         Intent el = new Intent(MapaMovilAR.this,
-//	                 cl.puc.memoria.EmergenciesList.class);
-//	         startActivity(el);
-//	     } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//	         Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-//	     }
 	 }
 	/**Change state of display **/
-	void change_state(int state)
+	private int current_state = 0;
+	private void change_state(int state)
 	{
-		if(state == 1)
-		{			
-			image_info.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ok), null, null);
-			text_info.setText(getResources().getString(R.string.info_save));
-			text_info.setTextColor(getResources().getColor(R.color.no_radiation));
-		}
-		else if(state == 2)
+		/*TODO change numbers to consts*/
+		if(state != current_state)
 		{
-			text_info.setText(getResources().getString(R.string.info_ded));
-			image_info.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.radiation_detect), null, null);
-			text_info.setTextColor(getResources().getColor(R.color.radiation_detect));
-		}
-		else if(state == 3)
-		{
-			text_info.setText(getResources().getString(R.string.info_no_cam));
-			image_info.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+			current_state = state;
+			switch(state)
+			{
+				case 1:
+					image_info.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.ok), null, null);
+					text_info.setText(getResources().getString(R.string.info_save));
+					text_info.setTextColor(getResources().getColor(R.color.no_radiation));
+					text_info.setTextSize(getResources().getDimension(R.dimen.text_info_dim));
+					background.setBackgroundColor(getResources().getColor(R.color.no_radiation_background));
+					text_bright.setTextColor(getResources().getColor(R.color.description));
+					break;
+				case 2:
+					image_info.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.radiation_detect), null, null);
+					text_info.setText(getResources().getString(R.string.info_ded));
+					text_info.setTextColor(getResources().getColor(R.color.radiation_detect));
+					text_info.setTextSize(getResources().getDimension(R.dimen.text_info_dim));
+					background.setBackgroundColor(getResources().getColor(R.color.radiation_detect_background));
+					text_bright.setTextColor(getResources().getColor(R.color.description));
+					break;
+				case 3:
+					text_info.setText(getResources().getString(R.string.info_no_cam));
+					image_info.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+					text_info.setTextSize(getResources().getDimension(R.dimen.text_info_dim));
+					background.setBackgroundColor(getResources().getColor(R.color.no_radiation_background));
+					text_bright.setTextColor(getResources().getColor(R.color.description));
+					break;
+				case 4:
+					text_info.setText(getResources().getString(R.string.info_low_rad));
+					image_info.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(R.drawable.low_radiation), null, null);
+					text_info.setTextColor(getResources().getColor(R.color.low_radiation_detect));
+					text_info.setTextSize(getResources().getDimension(R.dimen.text_info_low));
+					background.setBackgroundColor(getResources().getColor(R.color.low_radiation_detect_background));
+					text_bright.setTextColor(getResources().getColor(R.color.low_radiation_detect));
+					break;
+				default:
+					break;				
+			}
 		}
 	}	
 	

@@ -3,7 +3,7 @@
     <item
         android:id="@+id/menu_settings"
         android:orderInCategory="100"
-        android:title="@string/settings"/>
+        android:title="@string/calibrate"/>
     <item android:id="@+id/menu_info"
          android:title="@string/Info"
          android:orderInCategory="101" />

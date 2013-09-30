@@ -28,7 +28,7 @@ public class InitInfoActivity extends Activity {
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(), CalibrationActivity.class);
 				intent.putExtra(CalibrationActivity.FIRST_TH, 60);
-				intent.putExtra(CalibrationActivity.ALARM_LEVEL, 5);
+				intent.putExtra(CalibrationActivity.ALARM_LEVEL, RadiationAlarm.ALARM_LEVEL_VAL);
 				startActivityForResult(intent, REQUEST_CALIBRATION);				
 			}
 		});

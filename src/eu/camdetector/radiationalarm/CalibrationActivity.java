@@ -26,7 +26,7 @@ public class CalibrationActivity extends Activity {
 	public final static String FIRST_TH = "first_th";
 	public final static String ALARM_LEVEL = "alarm_level";
 	
-	public final static int FIRST_TH_OFFSET = 15;
+	public final static int FIRST_TH_OFFSET = 20;
 	protected static final String TAG = "CAL";
 	
 	public ProgressBar progress;

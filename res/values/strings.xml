@@ -30,5 +30,8 @@
     <string name="saved_info_show">saved_info_show</string>
     <string name="first_th_val">1. threshold</string>
     <string name="second_th_val">2. threshold</string>
-
+    <string name="info_low_rad">You have detected safe background radiation or weak radiation source.\n Keep the app running for longer time to obtain more accurate measurment.</string>
+	<string name="init_info_step_1">STEP 1: obscure your camera</string>
+	<string name="init_info_step_2">STEP 2: calibrate your device</string>
+	<string name="init_info_init" >Follow two steps to turn your smartfone to radiation alarm.</string>
 </resources>

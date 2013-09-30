@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
- 	<color name="radiation_detect">#FFC10900</color>
- 	<color name="no_radiation">#FF023F03</color>  
+ 	<color name="no_radiation">#FF023F03</color> 
+ 	<color name="no_radiation_background">#FFFFFF</color>
+ 	<color name="radiation_detect">#C20A02</color>
+ 	<color name="radiation_detect_background">#FBD100</color>
+ 	<color name="low_radiation_detect">#009946</color> 
+ 	<color name="low_radiation_detect_background">#2A2927</color> 
+ 	<color name="description">#000000</color>  
 </resources>
