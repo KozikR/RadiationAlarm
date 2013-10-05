@@ -5,7 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="button_click">Click Me</string>
-    <string name="info_save">no radiation \n </string>
+    <string name="info_save">Radiation is not detected.\n You are safe!</string>
     <string name="info_ded">Radiation detected</string>
     <string name="info_bright">Number of bright pixels: %1$d</string>
     <string name="info_no_cam">Your phone hasn\'t got a camera.</string>
@@ -24,9 +24,12 @@
     <string name="saved_destination_IP">saved_destination_IP</string>
     <string name="preference_file_key">eu.camdetector.radiationalarm.pref</string>
     <string name="Info">Information</string>
-    <string name="Info_text">Photo camera in mobile phone can be use as a radiation detector, that could warning about high level of radiation, that can injure people health.\n Before use glue lens by black tape and calibrate software (settings-&gt;calibrate).</string>
+    <string name="Info_text">Information:\n
+A photo camera built-in your device can be used as a ionizing radiation detector. It could warn you against a high level of harmful radiation. Before use, please cover your main camera using e.g. a piece of black tape. Then go to Settings &#8212;> Calibrate, and now the application is ready to use.
+\n WARNING! \n
+The authors of the application put as much effort as they could to make the application the best. But there is no guarantee that application will work properly, won\'t damage your device and will be able to detect ionizing radiation properly.</string>
     <string name="dont_again">Don\'t show again</string>
-    <string name="Info_text_i">Photo camera in mobile phone can be use as a radiation detector, that could warning about high level of radiation, that can injure people health.\n Before use glue lens by black tape and calibrate software:</string>
+    <string name="Info_text_i">A photo camera built-in your device can be used as a ionizing radiation detector. It could warn you against a high level of harmful radiation. Before use, please cover your main camera using e.g. a piece of black tape.\n Before use glue lens by black tape and calibrate software:</string>
     <string name="saved_info_show">saved_info_show</string>
     <string name="first_th_val">1. threshold</string>
     <string name="second_th_val">2. threshold</string>
